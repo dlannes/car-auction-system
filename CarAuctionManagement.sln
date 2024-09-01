@@ -6,12 +6,14 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarAuctionManagement.API", "CarAuctionManagement.API\CarAuctionManagement.API.csproj", "{8E836E13-F385-43F3-A3CB-50E2F3DFD002}"
 	ProjectSection(ProjectDependencies) = postProject
 		{38A4F853-79BC-4F35-9B92-8ED70054934B} = {38A4F853-79BC-4F35-9B92-8ED70054934B}
+		{42E79F24-345D-4162-9BFC-544768C256F9} = {42E79F24-345D-4162-9BFC-544768C256F9}
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarAuctionManagement.Core", "CarAuctionManagement.Core\CarAuctionManagement.Core.csproj", "{A668404B-BCBA-4757-B79A-2FFFC3111A26}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarAuctionManagement.Infrastructure", "CarAuctionManagement.Infrastructure\CarAuctionManagement.Infrastructure.csproj", "{42E79F24-345D-4162-9BFC-544768C256F9}"
 	ProjectSection(ProjectDependencies) = postProject
+		{38A4F853-79BC-4F35-9B92-8ED70054934B} = {38A4F853-79BC-4F35-9B92-8ED70054934B}
 		{A668404B-BCBA-4757-B79A-2FFFC3111A26} = {A668404B-BCBA-4757-B79A-2FFFC3111A26}
 	EndProjectSection
 EndProject
@@ -28,7 +30,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarAuctionManagement.Tests"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9E657B50-CECB-4A83-A5A4-F75A36FAD8FF}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
 		.gitignore = .gitignore
+		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
 Global
