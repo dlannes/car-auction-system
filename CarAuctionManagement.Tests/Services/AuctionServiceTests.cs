@@ -37,7 +37,7 @@ namespace CarAuctionManagement.Tests.Services
 
             await _auctionService.StartAuction(vehicleId);
 
-            _mockAuctionRepository.Verify(repo => repo.Start(It.Is<Auction>(a => a.VehicleId == vehicleId)), Times.Once);
+            _mockAuctionRepository.Verify(repo => repo.Add(It.Is<Auction>(a => a.VehicleId == vehicleId)), Times.Once);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace CarAuctionManagement.Tests.Services
 
             await _auctionService.CloseActiveAuction(vehicleId);
 
-            _mockAuctionRepository.Verify(repo => repo.Close(auction.Id, It.IsAny<DateTime>()), Times.Once);
+            _mockAuctionRepository.Verify(repo => repo.CloseAuction(auction.Id, It.IsAny<DateTime>()), Times.Once);
         }
 
         [Fact]
@@ -94,7 +94,7 @@ namespace CarAuctionManagement.Tests.Services
             var bidAmount = 150m;
 
             _mockAuctionRepository.Setup(repo => repo.FindActiveByVehicleId(vehicleId)).ReturnsAsync(auction);
-            _mockBidRepository.Setup(repo => repo.FindHighestByAuctionId(vehicleId)).ReturnsAsync(highestBid);
+            _mockBidRepository.Setup(repo => repo.FindHighestBidByAuctionId(vehicleId)).ReturnsAsync(highestBid);
 
             await _auctionService.PlaceBid(vehicleId, bidAmount);
 
@@ -120,7 +120,7 @@ namespace CarAuctionManagement.Tests.Services
             var bidAmount = 90m;
 
             _mockAuctionRepository.Setup(repo => repo.FindActiveByVehicleId(vehicleId)).ReturnsAsync(auction);
-            _mockBidRepository.Setup(repo => repo.FindHighestByAuctionId(vehicleId)).ReturnsAsync(highestBid);
+            _mockBidRepository.Setup(repo => repo.FindHighestBidByAuctionId(vehicleId)).ReturnsAsync(highestBid);
 
             await Assert.ThrowsAsync<BidLowerThanCurrentException>(() => _auctionService.PlaceBid(vehicleId, bidAmount));
         }
@@ -134,7 +134,7 @@ namespace CarAuctionManagement.Tests.Services
             var highestBid = new Bid { Id = Guid.NewGuid(), AuctionId = auctionId, Amount = 100m, Timestamp = DateTime.UtcNow };
 
             _mockAuctionRepository.Setup(repo => repo.FindActiveByVehicleId(vehicleId)).ReturnsAsync(auction);
-            _mockBidRepository.Setup(repo => repo.FindHighestByAuctionId(vehicleId)).ReturnsAsync(highestBid);
+            _mockBidRepository.Setup(repo => repo.FindHighestBidByAuctionId(vehicleId)).ReturnsAsync(highestBid);
 
             var tasks = new[]
             {

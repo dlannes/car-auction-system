@@ -2,26 +2,20 @@
 {
     public class ValidationResult
     {
-        public bool IsValid => Errors.Count == default;
-        public string ErrorMessage => GetErrorMessage();
         public List<string> Errors { get; } = [];
+        public bool IsValid => Errors.Count == default;
 
-        public ValidationResult() { }
-
-        public ValidationResult(string message)
+        public void AddError(string message)
         {
-            Errors.Add(message);
+            if (!string.IsNullOrWhiteSpace(message))
+            {
+                Errors.Add(message);
+            }
         }
 
-        public ValidationResult(IEnumerable<string> messages)
+        public string GetErrorMessage()
         {
-            Errors.AddRange(messages);
-        }
-
-        private string GetErrorMessage() 
-        {
-            if (IsValid) return string.Empty;
-            return $"Validation errors: {string.Join(" | ", Errors)}";
+            return IsValid ? string.Empty : $"Validation errors: {string.Join(" | ", Errors)}";
         }
     }
 }

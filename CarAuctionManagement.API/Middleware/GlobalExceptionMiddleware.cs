@@ -2,14 +2,9 @@
 
 namespace CarAuctionManagement.API.Middleware
 {
-    public class GlobalExceptionMiddleware
+    public class GlobalExceptionMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-
-        public GlobalExceptionMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+        private readonly RequestDelegate _next = next;
 
         public async Task InvokeAsync(HttpContext context)
         {

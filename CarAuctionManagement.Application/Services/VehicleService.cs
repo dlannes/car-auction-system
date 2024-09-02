@@ -20,7 +20,7 @@ namespace CarAuctionManagement.Application.Services
             var validator = new VehicleValidator().Validate(vehicle);
             if (!validator.IsValid)
             {
-                throw new ValidationException(validator.ErrorMessage);
+                throw new ValidationException(validator.GetErrorMessage());
             }
 
             if (await _vehicleRepository.Exists(vehicle.Id))

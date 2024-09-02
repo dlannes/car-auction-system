@@ -1,18 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using CarAuctionManagement.Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CarAuctionManagement.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AuctionController : ControllerBase
+    public class AuctionController(IAuctionService auctionService) : ControllerBase
     {
-        // GET: api/<AuctionController>
+        private readonly IAuctionService _auctionService = auctionService;
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Start(Guid vehicleId)
         {
-            return new string[] { "value1", "value2" };
+            await _auctionService.StartAuction(vehicleId);
+            return Ok();
         }
 
         // GET api/<AuctionController>/5

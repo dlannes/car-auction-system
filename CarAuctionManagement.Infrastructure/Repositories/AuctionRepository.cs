@@ -10,7 +10,12 @@ namespace CarAuctionManagement.Infrastructure.Repositories
 {
     public class AuctionRepository : IAuctionRepository
     {
-        public Task Close(Guid auctionId, DateTime endTime)
+        public Task Add(Auction auction)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task CloseAuction(Guid auctionId, DateTime endTime)
         {
             throw new NotImplementedException();
         }
@@ -20,7 +25,22 @@ namespace CarAuctionManagement.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task Start(Auction auction)
+        public Task GetById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddBid(Bid bid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Bid>> GetAllBids(Guid auctionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Bid?> FindHighestBidById(Guid auctionId)
         {
             throw new NotImplementedException();
         }
