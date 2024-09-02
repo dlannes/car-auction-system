@@ -2,12 +2,11 @@
 using CarAuctionManagement.Application.Exceptions;
 using CarAuctionManagement.Application.Interfaces;
 using CarAuctionManagement.Application.Mappings;
-using CarAuctionManagement.Core.Common;
 using CarAuctionManagement.Core.Validators;
 
 namespace CarAuctionManagement.Application.Services
 {
-    public class VehicleIventory(IVehicleRepository vehicleRepository, VehicleMapper vehicleMapper) : IVehicleIventory
+    public class VehicleService(IVehicleRepository vehicleRepository, VehicleMapper vehicleMapper) : IVehicleService
     {
         private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
         private readonly VehicleMapper _vehicleMapper = vehicleMapper;
@@ -45,7 +44,7 @@ namespace CarAuctionManagement.Application.Services
 
             var vehicles = await _vehicleRepository.Search(vehicleType, manufacturer, model, year);
 
-            return vehicles.Select(_vehicleMapper.MapToVehicleDTO).ToList();
+            return vehicles.Select(_vehicleMapper.MapToDTO).ToList();
         }
     }
 }

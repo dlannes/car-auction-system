@@ -13,14 +13,14 @@ namespace CarAuctionManagement.Tests.Services
     public class VehicleServiceTests
     {
         private readonly Mock<IVehicleRepository> _mockRepository;
-        private readonly IVehicleIventory _vehicleService;
+        private readonly IVehicleService _vehicleService;
         private readonly VehicleMapper _vehicleMapper;
 
         public VehicleServiceTests()
         {
             _mockRepository = new Mock<IVehicleRepository>();
             _vehicleMapper = new VehicleMapper();
-            _vehicleService = new VehicleIventory(_mockRepository.Object, _vehicleMapper);
+            _vehicleService = new VehicleService(_mockRepository.Object, _vehicleMapper);
         }
 
         [Fact]

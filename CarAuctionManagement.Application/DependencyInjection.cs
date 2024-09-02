@@ -10,7 +10,7 @@ namespace CarAuctionManagement.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddSingleton<VehicleMapper>();
-            services.AddTransient<IAuctionManager, AuctionManager>();
+            services.AddTransient<IAuctionService, AuctionService>();
 
             return services;
         }

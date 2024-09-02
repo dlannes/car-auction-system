@@ -59,7 +59,7 @@ namespace CarAuctionManagement.Tests.Services
             var sedan = new Sedan(Guid.NewGuid(), "Toyota", "Camry", 2022, 10000m, 4);
 
             // Act
-            var result = _vehicleMapper.MapToVehicleDTO(sedan);
+            var result = _vehicleMapper.MapToDTO(sedan);
 
             // Assert
             Assert.Equal("sedan", result.VehicleType, ignoreCase: true);

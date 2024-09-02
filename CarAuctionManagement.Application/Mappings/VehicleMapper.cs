@@ -1,7 +1,6 @@
-﻿using System.Reflection;
-using System.Collections.Generic;
-using CarAuctionManagement.Application.DTOs;
+﻿using CarAuctionManagement.Application.DTOs;
 using CarAuctionManagement.Core.Models;
+using System.Reflection;
 
 namespace CarAuctionManagement.Application.Mappings
 {
@@ -21,31 +20,31 @@ namespace CarAuctionManagement.Application.Mappings
         {
             if (string.IsNullOrWhiteSpace(vehicleDTO.VehicleType))
             {
-                throw new ArgumentException("`VehicleType` is required.", nameof(vehicleDTO.VehicleType));
+                throw new ArgumentException("VehicleType is required.", nameof(vehicleDTO.VehicleType));
             }
 
             if (!_vehicleTypeToConstructor.TryGetValue(vehicleDTO.VehicleType, out var constructor))
             {
-                throw new ArgumentException($"Vehicle type `{vehicleDTO.VehicleType}` is not recognized.", nameof(vehicleDTO.VehicleType));
+                throw new ArgumentException($"Vehicle type {vehicleDTO.VehicleType} is not recognized.", nameof(vehicleDTO.VehicleType));
             }
 
             return constructor(vehicleDTO);
         }
 
-        public VehicleDTO MapToVehicleDTO(Vehicle vehicle)
+        public VehicleDTO MapToDTO(Vehicle vehicle)
         {
             var vehicleType = vehicle.GetType().Name.ToLower();
             if (!_vehicleToDTOMapper.TryGetValue(vehicleType, out var mapper))
             {
-                throw new ArgumentException($"Vehicle type `{vehicleType}` is not recognized.", nameof(vehicleType));
+                throw new ArgumentException($"Vehicle type {vehicleType} is not recognized.", nameof(vehicleType));
             }
 
             return mapper(vehicle);
         }
 
         private void RegisterTypes() {
-            var assembly = typeof(Vehicle).Assembly;
-            var vehicleTypes = assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Vehicle)));
+            var vehicleTypes = typeof(Vehicle).Assembly
+                .GetTypes().Where(t => t.IsSubclassOf(typeof(Vehicle)));
 
             foreach (var type in vehicleTypes)
             {
@@ -59,7 +58,7 @@ namespace CarAuctionManagement.Application.Mappings
             var ctor = vehicleType.GetConstructors().FirstOrDefault();
             if (ctor == null)
             {
-                throw new InvalidOperationException($"Vehicle type `{vehicleType.Name}` does not have a public constructor.");
+                throw new InvalidOperationException($"Vehicle type {vehicleType.Name} does not have a public constructor.");
             }
 
             _vehicleTypeToConstructor[vehicleType.Name.ToLower()] = dto =>
@@ -110,13 +109,13 @@ namespace CarAuctionManagement.Application.Mappings
             var property = typeof(VehicleDTO).GetProperty(paramName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
             if (property == null)
             {
-                throw new ArgumentException($"Parameter `{paramName}` is not supported for the vehicle type `{vehicleType.Name}`.");
+                throw new ArgumentException($"Property {paramName} is not supported for the vehicle type {vehicleType.Name}.");
             }
 
             var value = property.GetValue(dto);
             if (value == null && Nullable.GetUnderlyingType(property.PropertyType) == null)
             {
-                throw new ArgumentException($"`{paramName}` is required for the specified vehicle type `{vehicleType.Name}`.");
+                throw new ArgumentException($"Property {paramName} is required for the specified vehicle type {vehicleType.Name}.");
             }
 
             return value;

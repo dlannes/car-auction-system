@@ -11,7 +11,7 @@ namespace CarAuctionManagement.Tests.Services
         private readonly Mock<IVehicleRepository> _mockVehicleRepository;
         private readonly Mock<IAuctionRepository> _mockAuctionRepository;
         private readonly Mock<IBidRepository> _mockBidRepository;
-        private readonly AuctionManager _auctionService;
+        private readonly AuctionService _auctionService;
 
         public AuctionServiceTests()
         {

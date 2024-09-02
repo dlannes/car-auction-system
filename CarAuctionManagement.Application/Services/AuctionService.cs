@@ -1,4 +1,5 @@
 ﻿using CarAuctionManagement.Application.DTOs;
+using CarAuctionManagement.Application.Exceptions;
 using CarAuctionManagement.Application.Interfaces;
 using CarAuctionManagement.Core.Exceptions;
 using CarAuctionManagement.Core.Models;
@@ -6,9 +7,9 @@ using CarAuctionManagement.Core.Validators;
 
 namespace CarAuctionManagement.Application.Services
 {
-    public class AuctionManager(
+    public class AuctionService(
         IVehicleRepository vehicleRepository,
-        IAuctionRepository auctionRepository) : IAuctionManager
+        IAuctionRepository auctionRepository) : IAuctionService
     {
         private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
         private readonly IAuctionRepository _auctionRepository = auctionRepository;

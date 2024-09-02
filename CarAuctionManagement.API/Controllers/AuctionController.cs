@@ -5,9 +5,9 @@ namespace CarAuctionManagement.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AuctionController(IAuctionManager auctionService) : ControllerBase
+    public class AuctionController(IAuctionService auctionService) : ControllerBase
     {
-        private readonly IAuctionManager _auctionService = auctionService;
+        private readonly IAuctionService _auctionService = auctionService;
 
         [HttpGet]
         public async Task<IActionResult> Start(Guid vehicleId)
