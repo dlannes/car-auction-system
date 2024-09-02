@@ -1,6 +1,4 @@
-﻿using CarAuctionManagement.Core.Common;
-
-namespace CarAuctionManagement.Core.Models
+﻿namespace CarAuctionManagement.Core.Models
 {
     public class Hatchback : Vehicle
     {

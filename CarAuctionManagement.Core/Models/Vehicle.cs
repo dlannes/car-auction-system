@@ -1,4 +1,4 @@
-﻿namespace CarAuctionManagement.Core.Common
+﻿namespace CarAuctionManagement.Core.Models
 {
     public abstract class Vehicle
     {

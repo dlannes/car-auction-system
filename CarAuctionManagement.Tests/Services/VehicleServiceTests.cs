@@ -3,7 +3,6 @@ using CarAuctionManagement.Application.Exceptions;
 using CarAuctionManagement.Application.Interfaces;
 using CarAuctionManagement.Application.Mappings;
 using CarAuctionManagement.Application.Services;
-using CarAuctionManagement.Core.Common;
 using CarAuctionManagement.Core.Exceptions;
 using CarAuctionManagement.Core.Models;
 using Moq;
@@ -14,14 +13,14 @@ namespace CarAuctionManagement.Tests.Services
     public class VehicleServiceTests
     {
         private readonly Mock<IVehicleRepository> _mockRepository;
-        private readonly IVehicleService _vehicleService;
+        private readonly IVehicleIventory _vehicleService;
         private readonly VehicleMapper _vehicleMapper;
 
         public VehicleServiceTests()
         {
             _mockRepository = new Mock<IVehicleRepository>();
             _vehicleMapper = new VehicleMapper();
-            _vehicleService = new VehicleService(_mockRepository.Object, _vehicleMapper);
+            _vehicleService = new VehicleIventory(_mockRepository.Object, _vehicleMapper);
         }
 
         [Fact]

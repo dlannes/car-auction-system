@@ -1,5 +1,4 @@
-﻿using CarAuctionManagement.Core.Common;
-using CarAuctionManagement.Core.Models;
+﻿using CarAuctionManagement.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,7 +2,7 @@
 
 namespace CarAuctionManagement.Application.Interfaces
 {
-    public interface IAuctionService
+    public interface IAuctionManager
     {
         Task StartAuction(Guid vehicleId);
         Task CloseActiveAuction(Guid vehicleId);

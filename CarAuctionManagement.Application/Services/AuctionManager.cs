@@ -6,9 +6,9 @@ using CarAuctionManagement.Core.Validators;
 
 namespace CarAuctionManagement.Application.Services
 {
-    public class AuctionService(
+    public class AuctionManager(
         IVehicleRepository vehicleRepository,
-        IAuctionRepository auctionRepository) : IAuctionService
+        IAuctionRepository auctionRepository) : IAuctionManager
     {
         private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
         private readonly IAuctionRepository _auctionRepository = auctionRepository;

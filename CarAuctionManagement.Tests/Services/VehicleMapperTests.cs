@@ -1,6 +1,5 @@
 ﻿using CarAuctionManagement.Application.DTOs;
 using CarAuctionManagement.Application.Mappings;
-using CarAuctionManagement.Core.Common;
 using CarAuctionManagement.Core.Models;
 using System.Reflection;
 

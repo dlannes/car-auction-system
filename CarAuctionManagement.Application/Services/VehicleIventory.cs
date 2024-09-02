@@ -7,7 +7,7 @@ using CarAuctionManagement.Core.Validators;
 
 namespace CarAuctionManagement.Application.Services
 {
-    public class VehicleService(IVehicleRepository vehicleRepository, VehicleMapper vehicleMapper) : IVehicleService
+    public class VehicleIventory(IVehicleRepository vehicleRepository, VehicleMapper vehicleMapper) : IVehicleIventory
     {
         private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
         private readonly VehicleMapper _vehicleMapper = vehicleMapper;

@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Collections.Generic;
 using CarAuctionManagement.Application.DTOs;
-using CarAuctionManagement.Core.Common;
+using CarAuctionManagement.Core.Models;
 
 namespace CarAuctionManagement.Application.Mappings
 {

@@ -1,6 +1,5 @@
 ﻿using CarAuctionManagement.Application.Interfaces;
 using CarAuctionManagement.Application.Services;
-using CarAuctionManagement.Core.Common;
 using CarAuctionManagement.Core.Exceptions;
 using CarAuctionManagement.Core.Models;
 using Moq;
@@ -12,7 +11,7 @@ namespace CarAuctionManagement.Tests.Services
         private readonly Mock<IVehicleRepository> _mockVehicleRepository;
         private readonly Mock<IAuctionRepository> _mockAuctionRepository;
         private readonly Mock<IBidRepository> _mockBidRepository;
-        private readonly AuctionService _auctionService;
+        private readonly AuctionManager _auctionService;
 
         public AuctionServiceTests()
         {

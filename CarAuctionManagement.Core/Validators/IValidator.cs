@@ -1,4 +1,6 @@
-﻿namespace CarAuctionManagement.Core.Common
+﻿using CarAuctionManagement.Core.Common;
+
+namespace CarAuctionManagement.Core.Validators
 {
     public interface IValidator<T>
     {

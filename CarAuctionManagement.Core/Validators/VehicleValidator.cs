@@ -1,4 +1,5 @@
 ﻿using CarAuctionManagement.Core.Common;
+using CarAuctionManagement.Core.Models;
 
 namespace CarAuctionManagement.Core.Validators
 {
