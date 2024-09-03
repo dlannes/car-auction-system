@@ -2,6 +2,7 @@
 using CarAuctionManagement.Application.Exceptions;
 using CarAuctionManagement.Application.Interfaces;
 using CarAuctionManagement.Application.Mappings;
+using CarAuctionManagement.Core.Models;
 using CarAuctionManagement.Core.Validators;
 
 namespace CarAuctionManagement.Application.Services
@@ -28,6 +29,11 @@ namespace CarAuctionManagement.Application.Services
             }
 
             await _vehicleRepository.Add(vehicle);
+        }
+
+        public Task<Vehicle?> GetVehicleByIdAsync(Guid id)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<List<VehicleDTO>> SearchVehicles(string? vehicleType, string? manufacturer, string? model, int? year)

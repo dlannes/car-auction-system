@@ -8,10 +8,8 @@ namespace CarAuctionManagement.Infrastructure
     {
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IBidRepository, BidRepository>();
             services.AddScoped<IVehicleRepository, VehicleRepository>();
             services.AddScoped<IAuctionRepository, AuctionRepository>();
-
 
             return services;
         }

@@ -11,6 +11,7 @@ namespace CarAuctionManagement.Application
         {
             services.AddSingleton<VehicleMapper>();
             services.AddTransient<IAuctionService, AuctionService>();
+            services.AddTransient<IVehicleService, VehicleService>();
 
             return services;
         }

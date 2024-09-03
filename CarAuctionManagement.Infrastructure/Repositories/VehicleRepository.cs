@@ -1,10 +1,5 @@
 ﻿using CarAuctionManagement.Application.Interfaces;
 using CarAuctionManagement.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CarAuctionManagement.Infrastructure.Repositories
 {
@@ -16,11 +11,6 @@ namespace CarAuctionManagement.Infrastructure.Repositories
         }
 
         public Task<bool> Exists(Guid vehicleId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Vehicle>> GetAll()
         {
             throw new NotImplementedException();
         }

@@ -6,6 +6,7 @@ namespace CarAuctionManagement.Application.Interfaces
     public interface IVehicleService
     {
         Task AddVehicle(VehicleDTO vehicle);
+        Task<Vehicle?> GetVehicleByIdAsync(Guid id);
         Task<List<VehicleDTO>> SearchVehicles(string? vehicleType, string? manufacturer, string? model, int? year);
     }
 }
