@@ -1,109 +1,58 @@
-﻿using CarAuctionManagement.Application.DTOs;
-using CarAuctionManagement.Application.Exceptions;
+﻿using CarAuctionManagement.Application.Exceptions;
 using CarAuctionManagement.Application.Interfaces;
-using CarAuctionManagement.Core.Exceptions;
+using CarAuctionManagement.Core.Common;
 using CarAuctionManagement.Core.Models;
-using CarAuctionManagement.Core.Validators;
 
 namespace CarAuctionManagement.Application.Services
 {
     public class AuctionService(
         IVehicleRepository vehicleRepository,
-        IAuctionRepository auctionRepository) : IAuctionService
+        IAuctionRepository auctionRepository,
+        IBidRepository bidRepository
+        ) : IAuctionService
     {
         private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
         private readonly IAuctionRepository _auctionRepository = auctionRepository;
+        private readonly IBidRepository _bidRepository = bidRepository;
+
 
         public async Task StartAuction(Guid vehicleId)
         {
-            var vehicle = await _vehicleRepository.GetById(vehicleId);
-            if(vehicle == null)
-            {
-                throw new VehicleNotFoundException(vehicleId);
-            }
+            var vehicle = await _vehicleRepository.FindById(vehicleId)
+                ?? throw new EntityNotFoundException(nameof(Vehicle), nameof(Vehicle.Id), vehicleId);
 
-            var existingAuction = await _auctionRepository.FindActiveByVehicleId(vehicleId);
-            if (existingAuction != null)
-            {
-                throw new AuctionAlreadyActiveException(vehicleId);
-            }
+            var activeAuction = await _auctionRepository.FindActiveByVehicleId(vehicleId);
+            if (activeAuction != null)
+                throw new ValidationException($"There is already an active {nameof(Auction)} for the vehicle with ID '{vehicleId}'.");
 
-            var newAuction = new Auction
-            {
-                Id = Guid.NewGuid(),
-                VehicleId = vehicleId,
-                StartTime = DateTime.UtcNow,
-            };
+            var newAuction = Auction.Create(vehicleId);
+            var initalBid = Bid.Create(newAuction.Id, vehicle.StartingBid);
+
             await _auctionRepository.Add(newAuction);
+            await _bidRepository.Add(initalBid);
         }
 
         public async Task CloseActiveAuction(Guid vehicleId)
         {
-            var auction = await _auctionRepository.FindActiveByVehicleId(vehicleId);
-            if (auction == null)
-            {
-                throw new AuctionNotFoundException(vehicleId);
-            }
+            var auction = await _auctionRepository.FindActiveByVehicleId(vehicleId)
+                ?? throw new EntityNotFoundException($"Active {nameof(Auction)}", nameof(Auction.VehicleId), vehicleId);
 
-            await _auctionRepository.CloseAuction(auction.Id, DateTime.UtcNow);
+            await _auctionRepository.CloseAuction(auction.Id);
         }
 
-        public async Task PlaceBid(Guid vehicleId, decimal bidAmount)
+        public async Task PlaceBid(Guid auctionId, decimal amount)
         {
-            if (bidAmount < 0)
-            {
-                throw new NegativeBidAmountException(bidAmount);
-            }
+            var auction = await _auctionRepository.FindById(auctionId)
+                ?? throw new EntityNotFoundException(nameof(Auction), nameof(Auction.Id), auctionId);
+            if (!auction.IsActive)
+                throw new ValidationException($"{nameof(Auction)} with ID '{auctionId}' is not active.");
 
-            var auction = await _auctionRepository.FindActiveByVehicleId(vehicleId);
-            if (auction == null)
-            {
-                throw new AuctionNotFoundException(vehicleId);
-            }
+            var highestBid = await _bidRepository.FindHighestByAuctionId(auctionId);
+            if (highestBid != null && amount <= highestBid.Amount)
+                throw new ValidationException($"{nameof(Bid)} {nameof(amount)} must be greater than the current highest bid.");
 
-            var highestBid = await _auctionRepository.FindHighestBidById(vehicleId);
-            if (highestBid != null && bidAmount <= highestBid.Amount)
-            {
-                throw new BidLowerThanCurrentException(bidAmount, highestBid.Amount);
-            }
-
-            var newBid = new Bid
-            {
-                Id = Guid.NewGuid(),
-                AuctionId = auction.Id,
-                Timestamp = DateTime.Now,
-                Amount = bidAmount
-            };
-
+            var newBid = Bid.Create(auctionId, amount);
             await _bidRepository.Add(newBid);
         }
-
-        public async Task<BidDTO> PlaceBid(Guid auctionId, decimal amount, string bidder)
-        {
-            var test = await _auctionRepository.Get
-            var activeAuction = await _auctionRepository.FindActiveByVehicleId(auctionId);
-            if (activeAuction == null)
-            {
-                throw new ValidationException($"No active auction found for {nameof(auctionId)}: `vehicleId`.");
-            }
-
-            var bid = new Bid(Guid.NewGuid(), activeAuction.Id, amount, bidder, DateTime.UtcNow);
-
-            var validator = new BidValidator().Validate(bid);
-            if (!validator.IsValid)
-            {
-                throw new ValidationException(validator.GetErrorMessage());
-            }
-
-            var highestBid = await _bidRepository.FindHighestBidByAuctionId(activeAuction.Id);
-            if (highestBid != null && bid.Amount <= highestBid.Amount)
-            {
-                throw new ValidationException(string.Format("{0} must be greater than the current highest bid.", nameof(bid.Amount)));
-            }
-
-            await _bidRepository.Add(bid);
-            return;
-        }
     }
-
 }

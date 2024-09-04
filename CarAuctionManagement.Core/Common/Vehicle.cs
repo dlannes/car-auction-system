@@ -1,4 +1,4 @@
-﻿namespace CarAuctionManagement.Core.Models
+﻿namespace CarAuctionManagement.Core.Common
 {
     public abstract class Vehicle
     {
@@ -26,7 +26,7 @@
                 throw new ArgumentOutOfRangeException(nameof(year), year, $"Value must be within {YearOfTheFirstCar} and {MaxModelYear}.");
 
             if (startingBid < 0)
-                throw new ArgumentOutOfRangeException(nameof(startingBid), startingBid, $"Value can't be negative.");
+                throw new ArgumentOutOfRangeException(nameof(startingBid), startingBid, "Value can't be negative.");
 
             Id = id;
             Manufacturer = manufacturer;

@@ -1,4 +1,6 @@
-﻿namespace CarAuctionManagement.Core.Models
+﻿using CarAuctionManagement.Core.Common;
+
+namespace CarAuctionManagement.Core.Models
 {
     public class Sedan : Vehicle
     {

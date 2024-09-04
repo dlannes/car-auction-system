@@ -1,12 +1,12 @@
-﻿using CarAuctionManagement.Core.Models;
+﻿using CarAuctionManagement.Core.Common;
 
 namespace CarAuctionManagement.Application.Interfaces
 {
     public interface IVehicleRepository
     {
         Task Add(Vehicle vehicle);
-        Task<Vehicle?> GetById(Guid vehicleId);
-        Task<List<Vehicle>> Search(string? vehicleType, string? manufacturer, string? model, int? year);
+        Task<Vehicle?> FindById(Guid vehicleId);
+        Task<IEnumerable<Vehicle>> Search(string? vehicleType, string? manufacturer, string? model, int? year);
         Task<bool> Exists(Guid vehicleId);
     }
 }

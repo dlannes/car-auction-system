@@ -10,6 +10,7 @@ namespace CarAuctionManagement.Infrastructure
         {
             services.AddScoped<IVehicleRepository, VehicleRepository>();
             services.AddScoped<IAuctionRepository, AuctionRepository>();
+            services.AddScoped<IBidRepository, BidRepository>();
 
             return services;
         }

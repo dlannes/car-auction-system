@@ -10,7 +10,12 @@ namespace CarAuctionManagement.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task CloseAuction(Guid auctionId, DateTime endTime)
+        public Task AddBid(Bid bid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task CloseAuction(Guid auctionId)
         {
             throw new NotImplementedException();
         }
@@ -20,21 +25,7 @@ namespace CarAuctionManagement.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task AddBid(Bid bid)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Bid?> FindHighestBidById(Guid auctionId)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<List<Bid>> GetBidsById(Guid auctionId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Auction?> GetById(int id)
+        public Task<Auction?> FindById(Guid auctionId)
         {
             throw new NotImplementedException();
         }

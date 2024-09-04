@@ -3,42 +3,37 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarAuctionManagement.API.Controllers
 {
-    [Route("[controller]")]
+    using CarAuctionManagement.Application.DTOs;
+    using CarAuctionManagement.Application.Exceptions;
+    using Microsoft.AspNetCore.Mvc;
+    using System;
+    using System.Threading.Tasks;
+
     [ApiController]
+    [Route("[controller]")]
     public class AuctionController(IAuctionService auctionService) : ControllerBase
     {
         private readonly IAuctionService _auctionService = auctionService;
 
-        [HttpGet]
-        public async Task<IActionResult> Start(Guid vehicleId)
+        [HttpGet("start/{vehicleId}")]
+        public async Task<IActionResult> StartAuction(Guid vehicleId)
         {
             await _auctionService.StartAuction(vehicleId);
-            return Ok();
+            return Ok($"Auction for vehicle with ID '{vehicleId}' has started.");
         }
 
-        // GET api/<AuctionController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("close/{vehicleId}")]
+        public async Task<IActionResult> CloseAuction(Guid vehicleId)
         {
-            return "value";
+            await _auctionService.CloseActiveAuction(vehicleId);
+            return Ok($"Auction for vehicle with ID '{vehicleId}' has been closed.");
         }
 
-        // POST api/<AuctionController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> PlaceBid([FromBody] BidDTO dto)
         {
-        }
-
-        // PUT api/<AuctionController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<AuctionController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            await _auctionService.PlaceBid(dto.AuctionId, dto.Amount);
+            return Ok($"Bid of {dto.Amount} placed on auction '{dto.AuctionId}'.");
         }
     }
 }

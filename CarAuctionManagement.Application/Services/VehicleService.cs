@@ -2,8 +2,6 @@
 using CarAuctionManagement.Application.Exceptions;
 using CarAuctionManagement.Application.Interfaces;
 using CarAuctionManagement.Application.Mappings;
-using CarAuctionManagement.Core.Models;
-using CarAuctionManagement.Core.Validators;
 
 namespace CarAuctionManagement.Application.Services
 {
@@ -12,45 +10,34 @@ namespace CarAuctionManagement.Application.Services
         private readonly IVehicleRepository _vehicleRepository = vehicleRepository;
         private readonly VehicleMapper _vehicleMapper = vehicleMapper;
 
-        public async Task AddVehicle(VehicleDTO vehicleDTO)
+        public async Task AddToIventory(VehicleDTO vehicleDTO)
         {
-            vehicleDTO.Id ??= Guid.NewGuid();
+            vehicleDTO.Id = Guid.NewGuid();
             var vehicle = _vehicleMapper.MapToVehicle(vehicleDTO);
-
-            var validator = new VehicleValidator().Validate(vehicle);
-            if (!validator.IsValid)
-            {
-                throw new ValidationException(validator.GetErrorMessage());
-            }
 
             if (await _vehicleRepository.Exists(vehicle.Id))
             {
-                throw new ValidationException($"A vehicle with the ID `{vehicle.Id}` already exists.");
+                throw new ValidationException($"A {nameof(vehicle)} with the {nameof(vehicle.Id)} '{vehicle.Id}' already exists.");
             }
 
             await _vehicleRepository.Add(vehicle);
         }
 
-        public Task<Vehicle?> GetVehicleByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<List<VehicleDTO>> SearchVehicles(string? vehicleType, string? manufacturer, string? model, int? year)
         {
-            if (!string.IsNullOrEmpty(vehicleType) && !_vehicleMapper.GetRegisteredVehicleTypes().Contains(vehicleType))
+            if (vehicleType == null && manufacturer == null && model == null && year == null)
             {
-                throw new ArgumentException("Invalid vehicle type provided.", nameof(vehicleType));
+                throw new ArgumentException("At least one of the search arguments must have a value.");
             }
 
-            if (year.HasValue && (year.Value < 1886 || year.Value > DateTime.UtcNow.Year))
+            if (!string.IsNullOrEmpty(vehicleType) && !_vehicleMapper.GetRegisteredVehicleTypes().Contains(vehicleType))
             {
-                throw new ArgumentException("Year must be between 1886 and the current year.", nameof(year));
+                throw new ArgumentException($"Invalid vehicle type provided.", nameof(vehicleType));
             }
 
             var vehicles = await _vehicleRepository.Search(vehicleType, manufacturer, model, year);
 
-            return vehicles.Select(_vehicleMapper.MapToDTO).ToList();
+            return vehicles.Any() ? vehicles.Select(_vehicleMapper.MapToDTO).ToList() : [];
         }
     }
 }

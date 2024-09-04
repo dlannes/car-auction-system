@@ -6,7 +6,7 @@ namespace CarAuctionManagement.Application.Interfaces
     {
         Task StartAuction(Guid vehicleId);
         Task CloseActiveAuction(Guid vehicleId);
-        Task<BidDTO> PlaceBid(Guid auctionId, decimal amount, string bidder);
+        Task PlaceBid(Guid auctionId, decimal amount);
     }
 
 }

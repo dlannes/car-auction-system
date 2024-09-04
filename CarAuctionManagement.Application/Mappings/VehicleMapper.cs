@@ -1,29 +1,36 @@
 ﻿using CarAuctionManagement.Application.DTOs;
-using CarAuctionManagement.Core.Models;
+using CarAuctionManagement.Core.Common;
 using System.Reflection;
 
 namespace CarAuctionManagement.Application.Mappings
 {
     public sealed class VehicleMapper
     {
-        private readonly Dictionary<string, Func<VehicleDTO, Vehicle>> _vehicleTypeToConstructor = new(StringComparer.OrdinalIgnoreCase);
-        private readonly Dictionary<string, Func<Vehicle, VehicleDTO>> _vehicleToDTOMapper = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, Func<VehicleDTO, Vehicle>> DTOToVehicleMappers = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, Func<Vehicle, VehicleDTO>> VehicleToDTOMappers = new(StringComparer.OrdinalIgnoreCase);
 
         public VehicleMapper()
         {
-            RegisterTypes();
+            var vehicleTypes = typeof(Vehicle).Assembly
+                .GetTypes().Where(t => t.IsSubclassOf(typeof(Vehicle)));
+
+            foreach (var vehicleType in vehicleTypes)
+            {
+                RegisterDTOToVehicleMapper(vehicleType);
+                RegisterVehicleToDTOMapper(vehicleType);
+            }
         }
 
-        public HashSet<string> GetRegisteredVehicleTypes() => _vehicleTypeToConstructor.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        public HashSet<string> GetRegisteredVehicleTypes() => DTOToVehicleMappers.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         public Vehicle MapToVehicle(VehicleDTO vehicleDTO)
         {
             if (string.IsNullOrWhiteSpace(vehicleDTO.VehicleType))
             {
-                throw new ArgumentException("VehicleType is required.", nameof(vehicleDTO.VehicleType));
+                throw new ArgumentException("VehicleType is required.", nameof(VehicleDTO.VehicleType));
             }
 
-            if (!_vehicleTypeToConstructor.TryGetValue(vehicleDTO.VehicleType, out var constructor))
+            if (!DTOToVehicleMappers.TryGetValue(vehicleDTO.VehicleType, out var constructor))
             {
                 throw new ArgumentException($"Vehicle type {vehicleDTO.VehicleType} is not recognized.", nameof(vehicleDTO.VehicleType));
             }
@@ -34,7 +41,7 @@ namespace CarAuctionManagement.Application.Mappings
         public VehicleDTO MapToDTO(Vehicle vehicle)
         {
             var vehicleType = vehicle.GetType().Name.ToLower();
-            if (!_vehicleToDTOMapper.TryGetValue(vehicleType, out var mapper))
+            if (!VehicleToDTOMappers.TryGetValue(vehicleType, out var mapper))
             {
                 throw new ArgumentException($"Vehicle type {vehicleType} is not recognized.", nameof(vehicleType));
             }
@@ -42,18 +49,7 @@ namespace CarAuctionManagement.Application.Mappings
             return mapper(vehicle);
         }
 
-        private void RegisterTypes() {
-            var vehicleTypes = typeof(Vehicle).Assembly
-                .GetTypes().Where(t => t.IsSubclassOf(typeof(Vehicle)));
-
-            foreach (var type in vehicleTypes)
-            {
-                RegisterVehicleType(type);
-                RegisterDTOType(type);
-            }
-        }
-
-        private void RegisterVehicleType(Type vehicleType)
+        private void RegisterDTOToVehicleMapper(Type vehicleType)
         {
             var ctor = vehicleType.GetConstructors().FirstOrDefault();
             if (ctor == null)
@@ -61,7 +57,7 @@ namespace CarAuctionManagement.Application.Mappings
                 throw new InvalidOperationException($"Vehicle type {vehicleType.Name} does not have a public constructor.");
             }
 
-            _vehicleTypeToConstructor[vehicleType.Name.ToLower()] = dto =>
+            DTOToVehicleMappers[vehicleType.Name.ToLower()] = dto =>
             {
                 var ctorParams = ctor.GetParameters();
                 var parameters = new object?[ctorParams.Length];
@@ -72,35 +68,14 @@ namespace CarAuctionManagement.Application.Mappings
                     if (string.IsNullOrWhiteSpace(paramName)) continue;
                     parameters[i] = GetParameterValue(dto, paramName, vehicleType);
                 }
-
-                return (Vehicle)ctor.Invoke(parameters);
-            };
-        }
-
-        private void RegisterDTOType(Type vehicleType)
-        {
-            _vehicleToDTOMapper[vehicleType.Name] = vehicle =>
-            {
-                var dto = new VehicleDTO
+                try
                 {
-                    VehicleType = vehicleType.Name,
-                    Manufacturer = string.Empty,
-                    Model = string.Empty,
-                    Year = default
-                };
-
-                var vehicleProperties = vehicleType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                foreach (var prop in vehicleProperties)
-                {
-                    var dtoProperty = typeof(VehicleDTO).GetProperty(prop.Name, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-                    if (dtoProperty != null && dtoProperty.CanWrite)
-                    {
-                        var value = prop.GetValue(vehicle);
-                        dtoProperty.SetValue(dto, value);
-                    }
+                    return (Vehicle)ctor.Invoke(parameters);
                 }
-
-                return dto;
+                catch (TargetInvocationException ex) when (ex.InnerException != null)
+                {
+                    throw ex.InnerException;
+                }
             };
         }
 
@@ -119,6 +94,35 @@ namespace CarAuctionManagement.Application.Mappings
             }
 
             return value;
+        }
+
+        private void RegisterVehicleToDTOMapper(Type vehicleType)
+        {
+            VehicleToDTOMappers[vehicleType.Name] = vehicle =>
+            {
+                var dto = new VehicleDTO
+                {
+                    VehicleType = vehicleType.Name,
+                    Manufacturer = string.Empty,
+                    Model = string.Empty,
+                    Year = default
+                };
+
+                var vehicleProperties = vehicleType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                foreach (var prop in vehicleProperties)
+                {
+                    var dtoProperty = typeof(VehicleDTO).GetProperty(prop.Name, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
+                        ?? throw new InvalidOperationException($"Property '{prop.Name}' is required for the vehicle type '{vehicleType.Name}' but is missing in {nameof(VehicleDTO)}.");
+
+                    if (dtoProperty.CanWrite)
+                    {
+                        var value = prop.GetValue(vehicle);
+                        dtoProperty.SetValue(dto, value);
+                    }
+                }
+
+                return dto;
+            };
         }
     }
 }

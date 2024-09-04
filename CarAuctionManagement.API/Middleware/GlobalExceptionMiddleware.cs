@@ -12,16 +12,39 @@ namespace CarAuctionManagement.API.Middleware
             {
                 await _next(context);
             }
-            catch (ValidationException ex)
+            catch (Exception ex)
             {
-                var result = Results.BadRequest(ex.Message);
-                await result.ExecuteAsync(context);
+                await HandleExceptionAsync(context, ex);
             }
-            catch (Exception)
+        }
+
+        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+            int statusCode;
+            string message;
+
+            switch (exception)
             {
-                var result = Results.Problem("An unexpected error occurred.", statusCode: StatusCodes.Status500InternalServerError);
-                await result.ExecuteAsync(context);
+                case ArgumentException:
+                    statusCode = StatusCodes.Status400BadRequest;
+                    message = exception.Message;
+                    break;
+                case ValidationException:
+                    statusCode = StatusCodes.Status400BadRequest;
+                    message = exception.Message;
+                    break;
+                case EntityNotFoundException:
+                    statusCode = StatusCodes.Status404NotFound;
+                    message = exception.Message;
+                    break;
+                default:
+                    statusCode = StatusCodes.Status500InternalServerError;
+                    message = "An unexpected error occurred.";
+                    break;
             }
+
+            var result = Results.Problem(message, statusCode: statusCode);
+            return result.ExecuteAsync(context);
         }
     }
 

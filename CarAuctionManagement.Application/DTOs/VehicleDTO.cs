@@ -10,6 +10,6 @@
         public decimal StartingBid { get; set; }
         public int? NumberOfDoors { get; set; }
         public int? NumberOfSeats { get; set; }
-        public decimal? LoadCapacity { get; set; }
+        public double? LoadCapacity { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using CarAuctionManagement.Application.Interfaces;
-using CarAuctionManagement.Core.Models;
+using CarAuctionManagement.Core.Common;
 
 namespace CarAuctionManagement.Infrastructure.Repositories
 {
@@ -15,12 +15,12 @@ namespace CarAuctionManagement.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Vehicle?> GetById(Guid vehicleId)
+        public Task<Vehicle?> FindById(Guid vehicleId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Vehicle>> Search(string? vehicleType, string? manufacturer, string? model, int? year)
+        public Task<IEnumerable<Vehicle>> Search(string? vehicleType, string? manufacturer, string? model, int? year)
         {
             throw new NotImplementedException();
         }
